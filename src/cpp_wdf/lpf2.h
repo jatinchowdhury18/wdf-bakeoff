@@ -8,6 +8,9 @@ namespace cpp_wdf
 
 using namespace chowdsp::WDF;
 
+/**
+ * A simple 2nd-order RC lowpass filter
+ */ 
 class LPF2
 {
 public:

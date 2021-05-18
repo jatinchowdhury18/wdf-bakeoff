@@ -1,3 +1,5 @@
+#include "cpp_wdf/diode_clipper.h"
+#include "cpp_wdf/ff2.h"
 #include "cpp_wdf/lpf2.h"
 #include "test_utils.h"
 
@@ -8,6 +10,8 @@ void help()
     std::cout << std::endl;
     std::cout << "Available circuits: " << std::endl;
     std::cout << "\tlpf2" << std::endl;
+    std::cout << "\tdiode_clipper" << std::endl;
+    std::cout << "\tff2" << std::endl;
 }
 
 int main(int argc, char* argv[])
@@ -25,7 +29,7 @@ int main(int argc, char* argv[])
     }
 
     std::string circuitType = argv[1];
-    double lengthSeconds = 10.0;
+    double lengthSeconds = 20.0;
     if(argc >= 3)
         lengthSeconds = atoi(argv[2]);
 
@@ -38,6 +42,16 @@ int main(int argc, char* argv[])
     {
         cpp_wdf::LPF2 lpf2 ((float) sampleRate);
         compareWDFs(lpf2, lpf2, lengthSeconds, sampleRate);
+    }
+    else if(circuitType == "diode_clipper")
+    {
+        cpp_wdf::DiodeClipper dc ((float) sampleRate);
+        compareWDFs(dc, dc, lengthSeconds, sampleRate);
+    }
+    else if(circuitType == "ff2")
+    {
+        cpp_wdf::FF2 ff2 ((float) sampleRate);
+        compareWDFs(ff2, ff2, lengthSeconds, sampleRate);
     }
     else
     {
