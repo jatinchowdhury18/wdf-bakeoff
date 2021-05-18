@@ -2,6 +2,7 @@
 #include "cpp_wdf/ff2.h"
 #include "cpp_wdf/lpf2.h"
 
+// #include "faust_ff2.h"
 #include "faust_lpf2.h"
 
 #include "test_utils.h"
@@ -59,6 +60,11 @@ int main(int argc, char* argv[])
     {
         cpp_wdf::FF2 ff2 ((float) sampleRate);
         compareWDFs(ff2, ff2, lengthSeconds, sampleRate);
+
+        // FF2 ff2_faust;
+        // ff2_faust.init((int) sampleRate);
+
+        // compareWDFs(ff2_faust, ff2, lengthSeconds, sampleRate);
     }
     else
     {
