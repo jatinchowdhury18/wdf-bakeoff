@@ -20,16 +20,18 @@ public:
         vs.connectToNode (&i1);
     }
 
-    void process (float* data, int numSamples)
+    void compute (int numSamples, float** input, float** output)
     {
+        auto* x = input[0];
+        auto* y = output[0];
         for (int i = 0; i < numSamples; ++i)
         {
-            vs.setVoltage (data[i]);
+            vs.setVoltage (x[i]);
 
             vs.incident (i1.reflected());
             i1.incident (vs.reflected());
 
-            data[i] = c1.voltage();
+            y[i] = c1.voltage();
         }
     }
 

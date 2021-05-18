@@ -1,6 +1,9 @@
 #include "cpp_wdf/diode_clipper.h"
 #include "cpp_wdf/ff2.h"
 #include "cpp_wdf/lpf2.h"
+
+#include "faust_lpf2.h"
+
 #include "test_utils.h"
 
 void help()
@@ -41,7 +44,11 @@ int main(int argc, char* argv[])
     if(circuitType == "lpf2")
     {
         cpp_wdf::LPF2 lpf2 ((float) sampleRate);
-        compareWDFs(lpf2, lpf2, lengthSeconds, sampleRate);
+
+        LPF2 lpf2_faust;
+        lpf2_faust.init((int) sampleRate);
+
+        compareWDFs(lpf2_faust, lpf2, lengthSeconds, sampleRate);
     }
     else if(circuitType == "diode_clipper")
     {

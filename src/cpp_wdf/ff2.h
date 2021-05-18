@@ -24,15 +24,17 @@ public:
         Vin.connectToNode (&I1);
     }
 
-    void process (float* data, int numSamples)
+    void compute (int numSamples, float** input, float** output)
     {
+        auto* x = input[0];
+        auto* y = output[0];
         for (int i = 0; i < numSamples; ++i)
         {
-            Vin.setVoltage (data[i]);
+            Vin.setVoltage (x[i]);
 
             Vin.incident (I1.reflected());
             I1.incident (Vin.reflected());
-            data[i] = R16.current();
+            y[i] = R16.current();
         }
     }
 

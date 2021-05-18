@@ -19,14 +19,16 @@ public:
         dp.connectToNode (&P1);
     }
 
-    void process (float* data, int numSamples)
+    void compute (int numSamples, float** input, float** output)
     {
+        auto* x = input[0];
+        auto* y = output[0];
         for (int i = 0; i < numSamples; ++i)
         {
-            Vs.setVoltage (data[i]);
+            Vs.setVoltage (x[i]);
 
             dp.incident (P1.reflected());
-            data[i] = C1.voltage();
+            y[i] = C1.voltage();
             P1.incident (dp.reflected());
         }
     }        
