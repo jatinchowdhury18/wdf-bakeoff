@@ -34,15 +34,11 @@ public:
     }        
 
 private:
-    ResistiveVoltageSource<float> Vs;
-    Resistor<float> R1 { 4700.0f };
-    Capacitor<float> C1;
-    
-    using S1Type = WDFSeriesT<float, ResistiveVoltageSource<float>, Resistor<float>>;
-    S1Type S1 { Vs, R1 }; 
+    ResistiveVoltageSource<float> Vs { 4700.0f };
+    Capacitor<float> C1; 
 
-    using P1Type = WDFParallelT<float, S1Type, Capacitor<float>>;
-    P1Type P1 { S1, C1 };
+    using P1Type = WDFParallelT<float, ResistiveVoltageSource<float>, Capacitor<float>>;
+    P1Type P1 { Vs, C1 };
 
     // GZ34 diode pair
     DiodePair<float> dp { 2.52e-9f, 0.02585f };
