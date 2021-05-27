@@ -18,7 +18,7 @@ add_custom_command(
     TARGET FaustOutputs
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/faust_wdf
     COMMAND faust -i -a faustMinimal.h lpf2.dsp -o ${FAUST_OUT_DIR}/faust_lpf2.h --class-name LPF2
-    # COMMAND faust -i -a faustMinimal.h ff2.dsp -o ${FAUST_OUT_DIR}/faust_ff2.h --class-name FF2
+    # COMMAND faust -i -a faustMinimal.h ff2.dsp -o ${FAUST_OUT_DIR}/faust_ff2.h --class-name FF2 -t 0
     VERBATIM
 )
 

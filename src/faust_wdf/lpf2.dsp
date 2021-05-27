@@ -1,29 +1,23 @@
 import("stdfaust.lib");
 
-wdf = library("../../modules/faust-wdf-library/wdmodels.lib");
+second_order(f0, Vin) = wd.buildtree(connectionTree)
+with{
+    
+    //declare nodes
+    r1(i) = wd.resistor(i, R1);
+    r2(i) = wd.resistor(i, R2);
+    c1(i) = wd.capacitor(i, C1);
+    c2(i) = wd.capacitor_Vout(i, C2);
+    vin(i) = wd.u_voltage(i, Vin);
+    
+    //declare tree
+    connectionTree = vin : wd.series : (r1, (wd.parallel : (c1, (wd.series: (r2, c2)))));
 
-//second order rc filter
+    R2 = R1; 
+    R1 = 1*10^3; 
 
-//first, set up our components which have inherent values
-vs1(x) = wdf.u_voltage(x, no.pink_noise);
+    C2 = C1; 
+    C1 = 1/f0*1.62*10^-4; 
+};
 
-c1(x) = wdf.capacitor(x, 10*(10^-9)); 
-r1(x) = wdf.resistor(x, 4.7*10^3); 
-c2(x) = wdf.capacitor_output(x, 10*(10^-9));
-r2(x) = wdf.resistor(x, 4.7*10^3);
-
-//to allow the function to have an input, we have to make a few changes. 
-
-//first, redeclare our voltage source to have an open input, rather than input from a function
-vsin(x) = wdf.u_voltage(x, _);
-//second, redeclare our tree using the new input
-tree2 = vsin: (wdf.series : (r1, (wdf.parallel : (c1, (wdf.series : (c2, r2))))));
-// polarity inverter?
-
-//finally, we must add a crossover to our feedforward function to access the voltage input. 
-//in order to access the internals of the feedforward, we use the separate feedforward function `builddown`
-//in this case, our desired input is the third input of vsin, so we cross over the next 6 signals to access it
-order2_in = (_, ro.crossn1(6) : wdf.builddown(tree2))~wdf.buildup(tree2) : wdf.buildout(tree2); 
-
-//change process to `order2_in` to run the filter with available inputs
-process = order2_in;
+process = second_order(1000); 
