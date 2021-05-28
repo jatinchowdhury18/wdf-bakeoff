@@ -2,8 +2,9 @@
 #include "cpp_wdf/ff2.h"
 #include "cpp_wdf/lpf2.h"
 
-// #include "faust_ff2.h"
+#include "faust_ff2.h"
 #include "faust_lpf2.h"
+#include "faust_dc.h"
 
 #include "test_utils.h"
 
@@ -18,15 +19,15 @@ void help()
     std::cout << "\tff2" << std::endl;
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
-    if(argc < 2 || argc > 4)
+    if (argc < 2 || argc > 4)
     {
         help();
         return 1;
     }
 
-    if(std::string(argv[1]) == "--help")
+    if (std::string(argv[1]) == "--help")
     {
         help();
         return 1;
@@ -34,37 +35,40 @@ int main(int argc, char* argv[])
 
     std::string circuitType = argv[1];
     double lengthSeconds = 20.0;
-    if(argc >= 3)
+    if (argc >= 3)
         lengthSeconds = atoi(argv[2]);
 
     double sampleRate = 48000.0;
-    if(argc == 4)
+    if (argc == 4)
         sampleRate = atoi(argv[3]);
 
     std::cout << "Testing Circuit: " << circuitType << std::endl;
-    if(circuitType == "lpf2")
+    if (circuitType == "lpf2")
     {
-        cpp_wdf::LPF2 lpf2 ((float) sampleRate);
+        cpp_wdf::LPF2 lpf2((float)sampleRate);
 
         LPF2 lpf2_faust;
-        lpf2_faust.init((int) sampleRate);
+        lpf2_faust.init((int)sampleRate);
 
         compareWDFs(lpf2_faust, lpf2, lengthSeconds, sampleRate);
     }
-    else if(circuitType == "diode_clipper")
+    else if (circuitType == "diode_clipper")
     {
-        cpp_wdf::DiodeClipper dc ((float) sampleRate);
-        compareWDFs(dc, dc, lengthSeconds, sampleRate);
+        cpp_wdf::DiodeClipper dc((float)sampleRate);
+
+        DC dc_faust;
+        dc_faust.init((int)sampleRate);
+
+        compareWDFs(dc_faust, dc, lengthSeconds, sampleRate);
     }
-    else if(circuitType == "ff2")
+    else if (circuitType == "ff2")
     {
-        cpp_wdf::FF2 ff2 ((float) sampleRate);
-        compareWDFs(ff2, ff2, lengthSeconds, sampleRate);
+        cpp_wdf::FF2 ff2((float)sampleRate);
 
-        // FF2 ff2_faust;
-        // ff2_faust.init((int) sampleRate);
+        FF2 ff2_faust;
+        ff2_faust.init((int)sampleRate);
 
-        // compareWDFs(ff2_faust, ff2, lengthSeconds, sampleRate);
+        compareWDFs(ff2_faust, ff2, lengthSeconds, sampleRate);
     }
     else
     {

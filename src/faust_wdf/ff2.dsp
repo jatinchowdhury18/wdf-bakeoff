@@ -3,7 +3,7 @@ import("stdfaust.lib");
 ff2(in1) = wd.buildtree(tree)
 with{
     // set up components
-    Vin(x) = wd.u_voltage(x, _);
+    Vin(x) = wd.u_voltage(x, in1);
     Vbias(x) = wd.resVoltage(x, 0.001, 4.5);
 
     R5(x) = wd.resistor(x, 5100.0);
