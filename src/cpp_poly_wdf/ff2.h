@@ -20,7 +20,9 @@ class FF2
     using Parallel = chowdsp::WDF::WDFParallel<float>;
     using Inverter = chowdsp::WDF::PolarityInverter<float>;
 public:
-    FF2(float sampleRate)   
+    FF2() = default;
+
+    void reset(float sampleRate)
     {
         C4 = std::make_unique<Capacitor> (68e-9, sampleRate);
         C6 = std::make_unique<Capacitor> (390e-9, sampleRate);

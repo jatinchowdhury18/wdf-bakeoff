@@ -14,7 +14,9 @@ using namespace chowdsp::WDF;
 class LPF2
 {
 public:
-    LPF2(float sampleRate)
+    LPF2() = default;
+
+    void reset(float sampleRate)
     {
         c1 = std::make_unique<Capacitor<float>> (1.0e-6, sampleRate);
         c2 = std::make_unique<Capacitor<float>> (1.0e-6, sampleRate);

@@ -51,7 +51,8 @@ int main(int argc, char *argv[])
     {
         cpp_wdf::LPF2 lpf2((float)sampleRate);
 
-        cpp_poly_wdf::LPF2 lpf2_poly((float)sampleRate);
+        cpp_poly_wdf::LPF2 lpf2_poly;
+        lpf2_poly.reset((float)sampleRate);
 
         LPF2 lpf2_faust;
         lpf2_faust.init((int)sampleRate);
@@ -62,7 +63,8 @@ int main(int argc, char *argv[])
     {
         cpp_wdf::DiodeClipper dc((float)sampleRate);
         
-        cpp_poly_wdf::DiodeClipper dc_poly((float)sampleRate);
+        cpp_poly_wdf::DiodeClipper dc_poly;
+        dc_poly.reset((float)sampleRate);
 
         DC dc_faust;
         dc_faust.init((int)sampleRate);
@@ -72,7 +74,9 @@ int main(int argc, char *argv[])
     else if (circuitType == "ff2")
     {
         cpp_wdf::FF2 ff2((float)sampleRate);
-        cpp_poly_wdf::FF2 ff2_poly((float)sampleRate);
+
+        cpp_poly_wdf::FF2 ff2_poly;
+        ff2_poly.reset((float)sampleRate);
 
         FF2 ff2_faust;
         ff2_faust.init((int)sampleRate);

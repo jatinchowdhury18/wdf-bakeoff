@@ -14,7 +14,9 @@ using namespace chowdsp::WDF;
 class DiodeClipper
 {
 public:
-    DiodeClipper(float sampleRate)
+    DiodeClipper() = default;
+
+    void reset(float sampleRate)
     {
         C1 = std::make_unique<Capacitor<float>> (47.0e-9f, sampleRate);
         P1 = std::make_unique<WDFParallel<float>> (&Vs, C1.get());
