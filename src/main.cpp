@@ -2,6 +2,10 @@
 #include "cpp_wdf/ff2.h"
 #include "cpp_wdf/lpf2.h"
 
+#include "cpp_poly_wdf/diode_clipper.h"
+#include "cpp_poly_wdf/ff2.h"
+#include "cpp_poly_wdf/lpf2.h"
+
 #include "faust_ff2.h"
 #include "faust_lpf2.h"
 #include "faust_dc.h"
@@ -47,28 +51,33 @@ int main(int argc, char *argv[])
     {
         cpp_wdf::LPF2 lpf2((float)sampleRate);
 
+        cpp_poly_wdf::LPF2 lpf2_poly((float)sampleRate);
+
         LPF2 lpf2_faust;
         lpf2_faust.init((int)sampleRate);
 
-        compareWDFs(lpf2_faust, lpf2, lengthSeconds, sampleRate);
+        compareWDFs(lpf2_faust, lpf2, lpf2_poly, lengthSeconds, sampleRate);
     }
     else if (circuitType == "diode_clipper")
     {
         cpp_wdf::DiodeClipper dc((float)sampleRate);
+        
+        cpp_poly_wdf::DiodeClipper dc_poly((float)sampleRate);
 
         DC dc_faust;
         dc_faust.init((int)sampleRate);
 
-        compareWDFs(dc_faust, dc, lengthSeconds, sampleRate);
+        compareWDFs(dc_faust, dc, dc_poly, lengthSeconds, sampleRate);
     }
     else if (circuitType == "ff2")
     {
         cpp_wdf::FF2 ff2((float)sampleRate);
+        cpp_poly_wdf::FF2 ff2_poly((float)sampleRate);
 
         FF2 ff2_faust;
         ff2_faust.init((int)sampleRate);
 
-        compareWDFs(ff2_faust, ff2, lengthSeconds, sampleRate);
+        compareWDFs(ff2_faust, ff2, ff2_poly, lengthSeconds, sampleRate);
     }
     else
     {
