@@ -13,10 +13,10 @@ namespace cpp_wdf
 class FF2
 {
 public:
-    FF2(float sampleRate) : C4 (68e-9, sampleRate),
-                            C6 (390e-9, sampleRate),
-                            C11 (2.2e-9, sampleRate),
-                            C12 (27e-9, sampleRate)
+    FF2(float sampleRate) : C4 (68e-9f, sampleRate),
+                            C6 (390e-9f, sampleRate),
+                            C11 (2.2e-9f, sampleRate),
+                            C12 (27e-9f, sampleRate)
     {
         Vbias.setVoltage (4.5f);
         Vin.connectToNode (&I1);

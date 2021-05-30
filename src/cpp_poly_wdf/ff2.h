@@ -24,10 +24,10 @@ public:
 
     void reset(float sampleRate)
     {
-        C4 = std::make_unique<Capacitor> (68e-9, sampleRate);
-        C6 = std::make_unique<Capacitor> (390e-9, sampleRate);
-        C11 = std::make_unique<Capacitor> (2.2e-9, sampleRate);
-        C12 = std::make_unique<Capacitor> (27e-9, sampleRate);
+        C4 = std::make_unique<Capacitor> (68e-9f, sampleRate);
+        C6 = std::make_unique<Capacitor> (390e-9f, sampleRate);
+        C11 = std::make_unique<Capacitor> (2.2e-9f, sampleRate);
+        C12 = std::make_unique<Capacitor> (27e-9f, sampleRate);
 
         S1 = std::make_unique<Series> (C12.get(), &R18);
         P1 = std::make_unique<Parallel> (S1.get(), &R17);

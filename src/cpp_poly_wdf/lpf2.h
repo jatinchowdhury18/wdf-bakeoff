@@ -18,8 +18,8 @@ public:
 
     void reset(float sampleRate)
     {
-        c1 = std::make_unique<Capacitor<float>> (1.0e-6, sampleRate);
-        c2 = std::make_unique<Capacitor<float>> (1.0e-6, sampleRate);
+        c1 = std::make_unique<Capacitor<float>> (1.0e-6f, sampleRate);
+        c2 = std::make_unique<Capacitor<float>> (1.0e-6f, sampleRate);
 
         s1 = std::make_unique<WDFSeries<float>> (c1.get(), &r1);
         p1 = std::make_unique<WDFParallel<float>> (c2.get(), s1.get());

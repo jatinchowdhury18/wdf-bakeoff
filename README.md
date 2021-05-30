@@ -32,7 +32,7 @@ while the `C++ poly` measurements are for the C++
 implementation with run-time polymorphism.
 
 |Circuit|Faust (time)|Faust (ratio)|C++ (time)|C++ (ratio)|C++ poly (time)|C++ poly (ratio)|
-|---|---|---|---|---|---|---|
-|LPF|0.30|199.1|0.59|101.8|0.47|127.5|
-|FF2|0.77|77.5|2.17|27.6|2.06|29.2|
-|Diode Clipper|2.83|21.2|0.54|110.2|0.60|100.4|
+|---    |---         |---          |---       |---        |---            |---             |
+|LPF    |0.37        |161.0        |0.50      |120.0      |0.61           |99.0            |
+|FF2    |0.86        |69.8         |1.22      |49.1       |2.62           |22.9            |
+|Diode Clipper|2.83  |21.2         |0.38      |158.6      |0.36           |164.9           |

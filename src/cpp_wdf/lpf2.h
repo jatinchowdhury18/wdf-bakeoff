@@ -14,8 +14,8 @@ using namespace chowdsp::WDF;
 class LPF2
 {
 public:
-    LPF2(float sampleRate) : c1 (1.0e-6, sampleRate),
-                             c2 (1.0e-6, sampleRate)
+    LPF2(float sampleRate) : c1 (1.0e-6f, sampleRate),
+                             c2 (1.0e-6f, sampleRate)
     {
         vs.connectToNode (&i1);
     }
