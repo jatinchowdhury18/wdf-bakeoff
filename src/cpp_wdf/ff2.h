@@ -1,6 +1,5 @@
 #pragma once
 
-#include <wdf.h>
 #include <wdf_t.h>
 
 namespace cpp_wdf
@@ -19,7 +18,6 @@ public:
                             C12 (27e-9f, sampleRate)
     {
         Vbias.setVoltage (4.5f);
-        Vin.connectToNode (&I1);
     }
 
     void compute (int numSamples, float** input, float** output)
@@ -32,15 +30,15 @@ public:
 
             Vin.incident (I1.reflected());
             I1.incident (Vin.reflected());
-            y[i] = R16.current();
+            y[i] = chowdsp::WDFT::current<float> (R16);
         }
     }
 
 private:
-    using Capacitor = chowdsp::WDF::Capacitor<float>;
-    using Resistor = chowdsp::WDF::Resistor<float>;
-    using ResVs = chowdsp::WDF::ResistiveVoltageSource<float>;
-    using IdealVs = chowdsp::WDF::IdealVoltageSource<float>;
+    using Capacitor = chowdsp::WDFT::CapacitorT<float>;
+    using Resistor = chowdsp::WDFT::ResistorT<float>;
+    using ResVs = chowdsp::WDFT::ResistiveVoltageSourceT<float>;
+    using IdealVs = chowdsp::WDFT::IdealVoltageSourceT<float>;
 
     IdealVs Vin;
     ResVs Vbias;
@@ -60,46 +58,46 @@ private:
     Capacitor C11;
     Capacitor C12;
 
-    using S1Type = chowdsp::WDF::WDFSeriesT<float, Capacitor, Resistor>;
+    using S1Type = chowdsp::WDFT::WDFSeriesT<float, Capacitor, Resistor>;
     S1Type S1 { C12, R18 };
 
-    using P1Type = chowdsp::WDF::WDFParallelT<float, S1Type, Resistor>;
+    using P1Type = chowdsp::WDFT::WDFParallelT<float, S1Type, Resistor>;
     P1Type P1 { S1, R17 };
 
-    using S2Type = chowdsp::WDF::WDFSeriesT<float, Capacitor, Resistor>;
+    using S2Type = chowdsp::WDFT::WDFSeriesT<float, Capacitor, Resistor>;
     S2Type S2 { C11, R15 };
 
-    using S3Type = chowdsp::WDF::WDFSeriesT<float, S2Type, Resistor>;
+    using S3Type = chowdsp::WDFT::WDFSeriesT<float, S2Type, Resistor>;
     S3Type S3 { S2, R16 };
 
-    using P2Type = chowdsp::WDF::WDFParallelT<float, S3Type, P1Type>;
+    using P2Type = chowdsp::WDFT::WDFParallelT<float, S3Type, P1Type>;
     P2Type P2 { S3, P1 };
 
-    using P3Type = chowdsp::WDF::WDFParallelT<float, P2Type, Resistor>;
+    using P3Type = chowdsp::WDFT::WDFParallelT<float, P2Type, Resistor>;
     P3Type P3 { P2, RVBot };
 
-    using S4Type = chowdsp::WDF::WDFSeriesT<float, P3Type, Resistor>;
+    using S4Type = chowdsp::WDFT::WDFSeriesT<float, P3Type, Resistor>;
     S4Type S4 { P3, RVTop };
 
-    using S5Type = chowdsp::WDF::WDFSeriesT<float, Capacitor, Resistor>;
+    using S5Type = chowdsp::WDFT::WDFSeriesT<float, Capacitor, Resistor>;
     S5Type S5 { C6, R9 };
 
-    using P4Type = chowdsp::WDF::WDFParallelT<float, S4Type, S5Type>;
+    using P4Type = chowdsp::WDFT::WDFParallelT<float, S4Type, S5Type>;
     P4Type P4 { S4, S5 };
 
-    using P5Type = chowdsp::WDF::WDFParallelT<float, P4Type, Resistor>;
+    using P5Type = chowdsp::WDFT::WDFParallelT<float, P4Type, Resistor>;
     P5Type P5 { P4, R8 };
 
-    using S6Type = chowdsp::WDF::WDFSeriesT<float, P5Type, ResVs>;
+    using S6Type = chowdsp::WDFT::WDFSeriesT<float, P5Type, ResVs>;
     S6Type S6 { P5, Vbias };
 
-    using P6Type = chowdsp::WDF::WDFParallelT<float, Resistor, Capacitor>;
+    using P6Type = chowdsp::WDFT::WDFParallelT<float, Resistor, Capacitor>;
     P6Type P6 { R5, C4 };
 
-    using S7Type = chowdsp::WDF::WDFSeriesT<float, P6Type, S6Type>;
+    using S7Type = chowdsp::WDFT::WDFSeriesT<float, P6Type, S6Type>;
     S7Type S7 { P6, S6 };
 
-    using I1Type = chowdsp::WDF::PolarityInverterT<float, S7Type>;
+    using I1Type = chowdsp::WDFT::PolarityInverterT<float, S7Type>;
     I1Type I1 { S7 };
 };
 

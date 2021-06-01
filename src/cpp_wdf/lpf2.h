@@ -1,12 +1,11 @@
 #pragma once
 
-#include <wdf.h>
 #include <wdf_t.h>
 
 namespace cpp_wdf
 {
 
-using namespace chowdsp::WDF;
+using namespace chowdsp::WDFT;
 
 /**
  * A simple 2nd-order RC lowpass filter
@@ -17,7 +16,6 @@ public:
     LPF2(float sampleRate) : c1 (1.0e-6f, sampleRate),
                              c2 (1.0e-6f, sampleRate)
     {
-        vs.connectToNode (&i1);
     }
 
     void compute (int numSamples, float** input, float** output)
@@ -28,30 +26,29 @@ public:
         {
             vs.setVoltage (x[i]);
 
-            vs.incident (i1.reflected());
-            i1.incident (vs.reflected());
+            vs.incident (s1.reflected());
+            s1.incident (vs.reflected());
 
-            y[i] = c1.voltage();
+            y[i] = voltage<float>(c1);
         }
     }
 
 private:
-    Resistor<float> r1 { 10.0e3f };
-    Resistor<float> r2 { 10.0e3f };
-    Capacitor<float> c1;
-    Capacitor<float> c2;
+    ResistorT<float> r1 { 10.0e3f };
+    ResistorT<float> r2 { 10.0e3f };
+    CapacitorT<float> c1;
+    CapacitorT<float> c2;
 
-    using S1Type = WDFSeriesT<float, Capacitor<float>, Resistor<float>>;
+    using S1Type = WDFSeriesT<float, CapacitorT<float>, ResistorT<float>>;
     S1Type s1 { c1, r1 };
 
-    using P1Type = WDFParallelT<float, Capacitor<float>, S1Type>;
+    using P1Type = WDFParallelT<float, CapacitorT<float>, S1Type>;
     P1Type p1 { c2, s1 };
 
-    using S2Type = WDFSeriesT<float, Resistor<float>, P1Type>;
+    using S2Type = WDFSeriesT<float, ResistorT<float>, P1Type>;
     S2Type s2 { r2, p1 };
 
-    PolarityInverterT<float, S2Type> i1 { s2 };
-    IdealVoltageSource<float> vs;
+    IdealVoltageSourceT<float> vs;
 };
 
 } // namespace cpp_wdf

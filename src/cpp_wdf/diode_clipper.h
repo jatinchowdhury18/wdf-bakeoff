@@ -1,12 +1,11 @@
 #pragma once
 
-#include <wdf.h>
 #include <wdf_t.h>
 
 namespace cpp_wdf
 {
 
-using namespace chowdsp::WDF;
+using namespace chowdsp::WDFT;
 
 /**
  * An RC diode clipper using an anti-parallel diode pair
@@ -16,7 +15,6 @@ class DiodeClipper
 public:
     DiodeClipper(float sampleRate) : C1 (47.0e-9f, sampleRate)
     {
-        dp.connectToNode (&P1);
     }
 
     void compute (int numSamples, float** input, float** output)
@@ -28,20 +26,20 @@ public:
             Vs.setVoltage (x[i]);
 
             dp.incident (P1.reflected());
-            y[i] = C1.voltage();
+            y[i] = voltage<float> (C1);
             P1.incident (dp.reflected());
         }
     }        
 
 private:
-    ResistiveVoltageSource<float> Vs { 4700.0f };
-    Capacitor<float> C1; 
+    ResistiveVoltageSourceT<float> Vs { 4700.0f };
+    CapacitorT<float> C1; 
 
-    using P1Type = WDFParallelT<float, ResistiveVoltageSource<float>, Capacitor<float>>;
+    using P1Type = WDFParallelT<float, ResistiveVoltageSourceT<float>, CapacitorT<float>>;
     P1Type P1 { Vs, C1 };
 
     // GZ34 diode pair
-    DiodePair<float> dp { 2.52e-9f, 0.02585f };
+    DiodePairT<float, P1Type> dp { 2.52e-9f, 0.02585f, P1 };
 };
 
 } // namespace cpp_wdf

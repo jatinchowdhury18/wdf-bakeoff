@@ -24,7 +24,7 @@ Finally, run the tool:
 
 ## Results
 
-The table below shows the time taken to process 60 seconds of
+The table below shows the time taken to process 100 seconds of
 audio at 192 kHz sample rate, as well as the "real-time" ratio
 (seconds of audio per second of processing time). The `C++`
 columns are for the C++ implementation using tempaltes,
@@ -33,6 +33,6 @@ implementation with run-time polymorphism.
 
 |Circuit|Faust (time)|Faust (ratio)|C++ (time)|C++ (ratio)|C++ poly (time)|C++ poly (ratio)|
 |---    |---         |---          |---       |---        |---            |---             |
-|LPF    |0.37        |161.0        |0.50      |120.0      |0.61           |99.0            |
-|FF2    |0.86        |69.8         |1.22      |49.1       |2.62           |22.9            |
-|Diode Clipper|2.83  |21.2         |0.38      |158.6      |0.36           |164.9           |
+|LPF    |0.47        |211.5        |0.21      |470.7      |0.81           |123.3           |
+|FF2    |1.05        |94.9         |1.56      |64.3       |3.07           |32.6            |
+|Diode Clipper|3.60  |27.8         |0.47      |214.2      |0.62           |160.7           |

@@ -21,7 +21,7 @@ public:
         C1 = std::make_unique<Capacitor<float>> (47.0e-9f, sampleRate);
         P1 = std::make_unique<WDFParallel<float>> (&Vs, C1.get());
 
-        dp.connectToNode (P1.get());
+        dp = std::make_unique<DiodePair<float>> (2.52e-9f, 0.02585f, P1.get());
     }
 
     void compute (int numSamples, float** input, float** output)
@@ -32,9 +32,9 @@ public:
         {
             Vs.setVoltage (x[i]);
 
-            dp.incident (P1->reflected());
+            dp->incident (P1->reflected());
             y[i] = C1->voltage();
-            P1->incident (dp.reflected());
+            P1->incident (dp->reflected());
         }
     }        
 
@@ -45,7 +45,7 @@ private:
     std::unique_ptr<WDFParallel<float>> P1;
 
     // GZ34 diode pair
-    DiodePair<float> dp { 2.52e-9f, 0.02585f };
+    std::unique_ptr<DiodePair<float>> dp;
 };
 
 } // namespace cpp_poly_wdf
