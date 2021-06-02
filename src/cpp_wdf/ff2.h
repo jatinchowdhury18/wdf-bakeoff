@@ -38,11 +38,8 @@ private:
     using Capacitor = chowdsp::WDFT::CapacitorT<float>;
     using Resistor = chowdsp::WDFT::ResistorT<float>;
     using ResVs = chowdsp::WDFT::ResistiveVoltageSourceT<float>;
-    using IdealVs = chowdsp::WDFT::IdealVoltageSourceT<float>;
 
-    IdealVs Vin;
     ResVs Vbias;
-
     Resistor R5 { 5100.0 };
     Resistor R8 { 1500.0 };
     Resistor R9 { 1000.0 };
@@ -99,6 +96,8 @@ private:
 
     using I1Type = chowdsp::WDFT::PolarityInverterT<float, S7Type>;
     I1Type I1 { S7 };
+
+    chowdsp::WDFT::IdealVoltageSourceT<float, I1Type> Vin { I1 };
 };
 
 } // namespace cpp_wdf

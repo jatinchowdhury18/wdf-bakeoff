@@ -48,7 +48,7 @@ private:
     using S2Type = WDFSeriesT<float, ResistorT<float>, P1Type>;
     S2Type s2 { r2, p1 };
 
-    IdealVoltageSourceT<float> vs;
+    IdealVoltageSourceT<float, S2Type> vs { s2 };
 };
 
 } // namespace cpp_wdf

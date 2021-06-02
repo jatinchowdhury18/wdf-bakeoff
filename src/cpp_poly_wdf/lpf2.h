@@ -26,7 +26,7 @@ public:
         s2 = std::make_unique<WDFSeries<float>> (&r2, p1.get());
         i1 = std::make_unique<PolarityInverter<float>> (s2.get());
 
-        vs.connectToNode (i1.get());
+        vs = std::make_unique<IdealVoltageSource<float>> (i1.get());
     }
 
     void compute (int numSamples, float** input, float** output)
@@ -35,10 +35,10 @@ public:
         auto* y = output[0];
         for (int i = 0; i < numSamples; ++i)
         {
-            vs.setVoltage (x[i]);
+            vs->setVoltage (x[i]);
 
-            vs.incident (i1->reflected());
-            i1->incident (vs.reflected());
+            vs->incident (i1->reflected());
+            i1->incident (vs->reflected());
 
             y[i] = c1->voltage();
         }
@@ -55,7 +55,7 @@ private:
     std::unique_ptr<WDFSeries<float>> s2;
 
     std::unique_ptr<PolarityInverter<float>> i1;
-    IdealVoltageSource<float> vs;
+    std::unique_ptr<IdealVoltageSource<float>> vs;
 };
 
 } // namespace cpp_poly_wdf

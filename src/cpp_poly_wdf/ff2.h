@@ -46,9 +46,9 @@ public:
         P6 = std::make_unique<Parallel> (&R5, C4.get());
         S7 = std::make_unique<Series> (P6.get(), S6.get());
         I1 = std::make_unique<Inverter> (S7.get());
+        Vin = std::make_unique<IdealVs> (I1.get());
 
         Vbias.setVoltage (4.5f);
-        Vin.connectToNode (I1.get());
     }
 
     void compute (int numSamples, float** input, float** output)
@@ -57,16 +57,16 @@ public:
         auto* y = output[0];
         for (int i = 0; i < numSamples; ++i)
         {
-            Vin.setVoltage (x[i]);
+            Vin->setVoltage (x[i]);
 
-            Vin.incident (I1->reflected());
-            I1->incident (Vin.reflected());
+            Vin->incident (I1->reflected());
+            I1->incident (Vin->reflected());
             y[i] = R16.current();
         }
     }
 
 private:
-    IdealVs Vin;
+    std::unique_ptr<IdealVs> Vin;
     ResVs Vbias;
 
     Resistor R5 { 5100.0 };
