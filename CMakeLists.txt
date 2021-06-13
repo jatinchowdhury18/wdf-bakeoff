@@ -7,7 +7,16 @@ add_executable(wdf-bakeoff
 )
 
 # include WDF library
-target_include_directories(wdf-bakeoff PUBLIC modules/chowdsp_utils/DSP/WDF)
+target_include_directories(wdf-bakeoff
+    PUBLIC
+        modules/chowdsp_utils/DSP/WDF
+        modules/xsimd/include
+)
+
+target_compile_definitions(wdf-bakeoff
+    PUBLIC
+        CHOWDSP_USE_XSIMD=1
+)
 
 # compile Faust code!
 add_custom_target(FaustOutputs)
