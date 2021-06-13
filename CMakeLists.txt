@@ -20,6 +20,7 @@ add_custom_command(
     # COMMAND faust -i -a faustMinimal.h lpf2.dsp -o ${FAUST_OUT_DIR}/faust_lpf2.h --class-name LPF2
     # COMMAND faust -i -a faustMinimal.h  diode_clipper.dsp -o ${FAUST_OUT_DIR}/faust_dc.h --class-name DC 
     # COMMAND faust -i -a faustMinimal.h -t 0 ff2.dsp -o ${FAUST_OUT_DIR}/faust_ff2.h --class-name FF2
+    # COMMAND faust -i -a faustMinimal.h -t 0 pultec.dsp -o ${FAUST_OUT_DIR}/faust_pultec.h --class-name Pultec
     VERBATIM
 )
 

@@ -30,7 +30,6 @@ double testWDF(WDFType& wdf, double timeSeconds, double sampleRate)
     auto start = clock_t::now();
     auto* data = signal.data();
     wdf.compute(nSamples, &data, &data);
-    // wdf.process(signal.data(), nSamples);
     auto duration = std::chrono::duration_cast<second_t>(clock_t::now() - start).count();
 
     std::cout << "Processed " << timeSeconds << " seconds of signal in "

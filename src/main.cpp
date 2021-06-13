@@ -1,6 +1,7 @@
 #include "cpp_wdf/diode_clipper.h"
 #include "cpp_wdf/ff2.h"
 #include "cpp_wdf/lpf2.h"
+#include "cpp_wdf/pultec.h"
 
 #include "cpp_poly_wdf/diode_clipper.h"
 #include "cpp_poly_wdf/ff2.h"
@@ -9,6 +10,7 @@
 #include "faust_ff2.h"
 #include "faust_lpf2.h"
 #include "faust_dc.h"
+#include "faust_pultec.h"
 
 #include "test_utils.h"
 
@@ -21,6 +23,7 @@ void help()
     std::cout << "\tlpf2" << std::endl;
     std::cout << "\tdiode_clipper" << std::endl;
     std::cout << "\tff2" << std::endl;
+    std::cout << "\tpultec" << std::endl;
 }
 
 int main(int argc, char *argv[])
@@ -82,6 +85,15 @@ int main(int argc, char *argv[])
         ff2_faust.init((int)sampleRate);
 
         compareWDFs(ff2_faust, ff2, ff2_poly, lengthSeconds, sampleRate);
+    }
+    else if (circuitType == "pultec")
+    {
+        cpp_wdf::Pultec pultec((float)sampleRate);
+
+        Pultec pultec_faust;
+        pultec_faust.init((int)sampleRate);
+
+        compareWDFs(pultec_faust, pultec, pultec, lengthSeconds, sampleRate);
     }
     else
     {
