@@ -4,6 +4,8 @@ project (wdf-bakeoff)
 
 add_executable(wdf-bakeoff
     src/main.cpp
+
+    src/ciaramella_out/crm_lpf2.cpp
 )
 
 # include WDF library

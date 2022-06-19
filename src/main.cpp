@@ -12,6 +12,8 @@
 #include "faust_dc.h"
 #include "faust_pultec.h"
 
+#include "ciaramella_out/crm_lpf2.h"
+
 #include "test_utils.h"
 
 void help()
@@ -60,7 +62,12 @@ int main(int argc, char *argv[])
         LPF2 lpf2_faust;
         lpf2_faust.init((int)sampleRate);
 
-        compareWDFs(lpf2_faust, lpf2, lpf2_poly, lengthSeconds, sampleRate);
+        lp_filter2 lpf2_crm;
+        lpf2_crm.setSampleRate((float)sampleRate);
+        lpf2_crm.reset();
+        lpf2_crm.setcutoff(1000.0f);
+
+        compareWDFs(lpf2_faust, lpf2, lpf2_poly, lpf2_crm, lengthSeconds, sampleRate);
     }
     else if (circuitType == "diode_clipper")
     {

@@ -1,0 +1,66 @@
+# zampogna.js -i lp_filter2 -c cutoff -t cpp lp_filter.crm
+
+pi = 3.141592653589793
+
+b, R0 = wdf_resistor(a, R) {
+    b = 0
+    R0 = R
+}
+
+b, R0 = wdf_capacitor(a, C) {
+    b = delay1(a)
+    R0 = 0.5 / (C * fs)
+}
+
+b = wdf_voltage_source_root(a, E) {
+    b = 2 * E - a
+}
+
+bu, bl, br, R0 = wdf_3port_series(au, al, ar, Rl, Rr) {
+    bl = al - Rl / (Rl + Rr) * (al + ar + au)
+    br = ar - Rr / (Rl + Rr) * (al + ar + au)
+    bu = -(al + ar)
+    R0 = Rl + Rr
+}
+
+bu, bl, br, R0 = wdf_3port_parallel(au, al, ar, Rl, Rr) {
+    bl = (dl - 1) * al + dr * ar + au
+    br = dl * al + (dr - 1) * ar + au
+    bu = dl * al + dr * ar
+
+    R0 = (Rl * Rr) / (Rl + Rr)
+
+    Gu = 1.0 / R0
+    Gl = 1.0 / Rl
+    Gr = 1.0 / Rr
+    dl = 2.0 * Gl / (Gu + Gl + Gr)
+    dr = 1.0 - dl
+}
+
+y = lp_filter2(x, cutoff) {
+    # component values
+    fc = (0.1 + 0.3 * cutoff) * fs
+    C = 1e-6
+    R = 1 / (2 * pi * fc * C)
+
+    # input
+    bV = wdf_voltage_source_root(aV, x)
+
+    # filter 1
+    bR1, RR1 = wdf_resistor(aR1, R)
+    bC1, RC1 = wdf_capacitor(aC1, C)
+    @aC1 = 0
+
+    # filter 2
+    bR2, RR2 = wdf_resistor(aR2, R)
+    bC2, RC2 = wdf_capacitor(aC2, C)
+    @aC2 = 0
+
+    # connections
+    aP1, aR2, aC2, Rp2 = wdf_3port_series(bP1, bR2, bC2, RR2, RC2)
+    aS1, bP1, aC1, Rp1 = wdf_3port_parallel(bS1, aP1, bC1, Rp2, RC1)
+    aV, aR1, bS1, Rp0 = wdf_3port_series(bC1, bR2, aS1, RR1, Rp1)
+
+    # output
+    y = 0.5 * (aC2 + bC2)
+}
