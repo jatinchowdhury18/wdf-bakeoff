@@ -1,4 +1,4 @@
-# zampogna.js -i lp_filter2 -c cutoff -t cpp lp_filter.crm
+# zampogna.js -i lp_filter2 -c cutoff -t cpp lpf2.crm
 
 pi = 3.141592653589793
 
@@ -17,7 +17,7 @@ b = wdf_voltage_source_root(a, E) {
 }
 
 bu, bl, br, R0 = wdf_3port_series(au, al, ar, Rl, Rr) {
-    # Stefano implementation 1 (0.6039 seconds)
+    # Stefano implementation 1
     # b1 = al + ar
     # b2 = b1 + au
     # bl = al - (Rl / (Rl + Rr)) * b2
@@ -25,13 +25,13 @@ bu, bl, br, R0 = wdf_3port_series(au, al, ar, Rl, Rr) {
     # bu = -b1
     # R0 = Rl + Rr
 
-    # Naive implementation (0.6034 seconds)
+    # Naive implementation
     bl = al - Rl / (Rl + Rr) * (al + ar + au)
     br = ar - Rr / (Rl + Rr) * (al + ar + au)
     bu = -(al + ar)
     R0 = Rl + Rr
 
-    # 1-multiply implementation (0.806 seconds)
+    # 1-multiply implementation
     # bl = al - port1Reflect * (au + al + ar)
     # br = -(au + bl)
     # bu = -(al + ar)
@@ -40,7 +40,7 @@ bu, bl, br, R0 = wdf_3port_series(au, al, ar, Rl, Rr) {
 }
 
 bu, bl, br, R0 = wdf_3port_parallel(au, al, ar, Rl, Rr) {
-    # Stefano implementation 1 (0.7055 seconds)
+    # Stefano implementation 1
     # b1 = al - ar
     # b2 = b1 * dl
     # br = b2 + au
@@ -53,7 +53,7 @@ bu, bl, br, R0 = wdf_3port_parallel(au, al, ar, Rl, Rr) {
     # Gr = 1.0 / Rr
     # dl = 2.0 * Gl / (Gu + Gl + Gr)
 
-    # Naive implementation (0.603367 seconds)
+    # Naive implementation
     bl = (dl - 1) * al + dr * ar + au
     br = dl * al + (dr - 1) * ar + au
     bu = dl * al + dr * ar
@@ -65,7 +65,7 @@ bu, bl, br, R0 = wdf_3port_parallel(au, al, ar, Rl, Rr) {
     dl = 2.0 * Gl / (Gu + Gl + Gr)
     dr = 1.0 - dl
 
-    # 1-multiply implementation (0.693 seconds)
+    # 1-multiply implementation
     # br = au + bTemp
     # bl = bDiff + br
 
