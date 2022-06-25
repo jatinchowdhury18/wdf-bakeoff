@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
         LPF2 lpf2_faust;
         lpf2_faust.init((int)sampleRate);
 
-        lp_filter2 lpf2_crm;
+        ciamarella::lp_filter2 lpf2_crm;
         lpf2_crm.setSampleRate((float)sampleRate);
         lpf2_crm.reset();
         lpf2_crm.setcutoff(1000.0f);
