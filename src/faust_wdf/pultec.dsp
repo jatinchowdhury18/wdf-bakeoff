@@ -30,7 +30,7 @@ with{
         a = wd.series : (p_HC_m, (wd.parallel : (p_LC, c_LF_a)));
         b = wd.series : (p_HC_p, (wd.parallel : (p_HC_m, (wd.series : (c_HCF, r_c))))); 
         c = r_b; 
-        d = r_d; 
+        d = r_d;
         e = wd.parallel : (c_LF_b, p_BL); 
         f = wd.series : ((wd.series : (p_HB_p, (wd.parallel : (vin, r_a)))), (wd.parallel : (p_HB_m, (wd.series : (p_HBQ, (wd.series : (l_HBF, c_HBF))))))); 
        
@@ -123,19 +123,6 @@ with{
     };
 };
 
-
-capacitorMobius(i, C, aM, bM, cM, dM) = genericNode_output_I(i, f, upPortRes)
-with{
-    f(a) = a*sF <: _, _'*sB : (_, _, _ :> _)~(_'*sB*sB)
-    with{
-        sB = (-1)*(aM*dM+bM*cM)/(2*aM*cM);
-        sF = (aM*dM-bM*cM)/(2*aM*cM);
-    };
-    upPortRes = cM/C*aM; 
-};
-
 process = pultec*200;
 
 // process = no.pink_noise <:  pultec*200 , pultec*200;
-
-// process(Cv, a, b, c, d) = capacitorMobius(0, Cv, a, b, c, d), wd.capacitor_output(0, Cv);

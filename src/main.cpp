@@ -4,6 +4,7 @@
 #include "cpp_wdf/ff2.h"
 #include "cpp_wdf/lpf2.h"
 #include "cpp_wdf/pultec.h"
+#include "cpp_wdf/baxandall.h"
 
 #include "cpp_poly_wdf/diode_clipper.h"
 #include "cpp_poly_wdf/ff2.h"
@@ -102,6 +103,12 @@ int main(int argc, char *argv[])
         rt_wdf::FF2 ff2_rtwdf {sampleRate};
 
         compareWDFs(ff2_faust, ff2, ff2_poly, ff2_rtwdf, lengthSeconds, sampleRate);
+    }
+    else if (circuitType == "baxandall")
+    {
+        cpp_wdf::BaxandallWDF baxandall((float) sampleRate);
+
+        compareWDFs(baxandall, baxandall, baxandall, lengthSeconds, sampleRate);
     }
     else if (circuitType == "pultec")
     {
