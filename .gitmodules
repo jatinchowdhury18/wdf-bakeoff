@@ -4,3 +4,6 @@
 [submodule "modules/chowdsp_wdf"]
 	path = modules/chowdsp_wdf
 	url = https://github.com/Chowdhury-DSP/chowdsp_wdf
+[submodule "modules/rt-wdf_lib"]
+	path = modules/rt-wdf_lib
+	url = https://github.com/RT-WDF/rt-wdf_lib

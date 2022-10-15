@@ -14,6 +14,9 @@
 #include "faust_dc.h"
 #include "faust_pultec.h"
 
+#include "rt_wdf/lpf2.h"
+#include "rt_wdf/ff2.h"
+
 #include "ciaramella_out/crm_lpf2.h"
 
 #include "test_utils.h"
@@ -64,12 +67,15 @@ int main(int argc, char *argv[])
         LPF2 lpf2_faust;
         lpf2_faust.init((int)sampleRate);
 
-        ciamarella::lp_filter2 lpf2_crm;
-        lpf2_crm.setSampleRate((float)sampleRate);
-        lpf2_crm.reset();
-        lpf2_crm.setcutoff(1000.0f);
+        rt_wdf::LPF2 lpf2_rtwdf {sampleRate};
 
-        compareWDFs(lpf2_faust, lpf2, lpf2_poly, lpf2_crm, lengthSeconds, sampleRate);
+        compareWDFs(lpf2_faust, lpf2, lpf2_poly, lpf2_rtwdf, lengthSeconds, sampleRate);
+
+//        ciamarella::lp_filter2 lpf2_crm;
+//        lpf2_crm.setSampleRate((float)sampleRate);
+//        lpf2_crm.reset();
+//        lpf2_crm.setcutoff(1000.0f);
+//        compareWDFsCRM(lpf2_faust, lpf2, lpf2_poly, lpf2_crm, lengthSeconds, sampleRate);
     }
     else if (circuitType == "diode_clipper")
     {
@@ -93,7 +99,9 @@ int main(int argc, char *argv[])
         FF2 ff2_faust;
         ff2_faust.init((int)sampleRate);
 
-        compareWDFs(ff2_faust, ff2, ff2_poly, lengthSeconds, sampleRate);
+        rt_wdf::FF2 ff2_rtwdf {sampleRate};
+
+        compareWDFs(ff2_faust, ff2, ff2_poly, ff2_rtwdf, lengthSeconds, sampleRate);
     }
     else if (circuitType == "pultec")
     {

@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.5)
 set(CMAKE_CXX_STANDARD 17)
 project (wdf-bakeoff)
 
-add_subdirectory(modules/chowdsp_wdf)
-add_subdirectory(modules/xsimd)
 
 add_executable(wdf-bakeoff
     src/main.cpp
@@ -11,10 +9,28 @@ add_executable(wdf-bakeoff
     src/ciaramella_out/crm_lpf2.cpp
 )
 
+# link with chowdsp_wdf
+add_subdirectory(modules/chowdsp_wdf)
+add_subdirectory(modules/xsimd)
 target_link_libraries(wdf-bakeoff
     PRIVATE
         chowdsp_wdf
         xsimd
+)
+
+# link with RT-WDF
+find_package(Armadillo REQUIRED)
+target_link_libraries(wdf-bakeoff PRIVATE ${ARMADILLO_LIBRARIES})
+target_include_directories(wdf-bakeoff
+    PRIVATE
+        ${ARMADILLO_INCLUDE_DIRS}
+        modules/rt-wdf_lib/Libs
+)
+target_sources(wdf-bakeoff
+    PRIVATE
+        modules/rt-wdf_lib/Libs/rt-wdf/rt-wdf.cpp
+        modules/rt-wdf_lib/Libs/rt-wdf/rt-wdf_nlModels.cpp
+        modules/rt-wdf_lib/Libs/rt-wdf/rt-wdf_nlSolvers.cpp
 )
 
 # compile Faust code!
@@ -33,4 +49,4 @@ add_custom_command(
 )
 
 add_dependencies(wdf-bakeoff FaustOutputs)
-target_include_directories(wdf-bakeoff PUBLIC ${FAUST_OUT_DIR})
+target_include_directories(wdf-bakeoff PRIVATE ${FAUST_OUT_DIR})
