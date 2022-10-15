@@ -1,11 +1,11 @@
 #pragma once
 
-#include <wdf_t.h>
+#include <chowdsp_wdf/chowdsp_wdf.h>
 
 namespace cpp_wdf
 {
 
-using namespace chowdsp::WDFT;
+using namespace chowdsp::wdft;
 
 /**
  * An RC diode clipper using an anti-parallel diode pair
@@ -39,7 +39,7 @@ private:
     P1Type P1 { Vs, C1 };
 
     // GZ34 diode pair
-    DiodePairT<float, P1Type> dp { 2.52e-9f, 0.02585f, P1 };
+    DiodePairT<float, P1Type> dp { P1, 2.52e-9f, 0.02585f };
 };
 
 } // namespace cpp_wdf

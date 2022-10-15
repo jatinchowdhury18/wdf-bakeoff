@@ -1,12 +1,12 @@
 #pragma once
 
-#include <wdf.h>
+#include <chowdsp_wdf/chowdsp_wdf.h>
 #include <memory>
 
 namespace cpp_poly_wdf
 {
 
-using namespace chowdsp::WDF;
+using namespace chowdsp::wdf;
 
 /**
  * An RC diode clipper using an anti-parallel diode pair
@@ -18,10 +18,7 @@ public:
 
     void reset(float sampleRate)
     {
-        C1 = std::make_unique<Capacitor<float>> (47.0e-9f, sampleRate);
-        P1 = std::make_unique<WDFParallel<float>> (&Vs, C1.get());
-
-        dp = std::make_unique<DiodePair<float>> (2.52e-9f, 0.02585f, P1.get());
+        C1.prepare (sampleRate);
     }
 
     void compute (int numSamples, float** input, float** output)
@@ -32,20 +29,20 @@ public:
         {
             Vs.setVoltage (x[i]);
 
-            dp->incident (P1->reflected());
-            y[i] = C1->voltage();
-            P1->incident (dp->reflected());
+            dp.incident (P1.reflected());
+            y[i] = C1.voltage();
+            P1.incident (dp.reflected());
         }
     }        
 
 private:
     ResistiveVoltageSource<float> Vs { 4700.0f };
-    std::unique_ptr<Capacitor<float>> C1;
+    Capacitor<float> C1 { 47.0e-9f };
     
-    std::unique_ptr<WDFParallel<float>> P1;
+    WDFParallel<float> P1 { &Vs, &C1 };
 
     // GZ34 diode pair
-    std::unique_ptr<DiodePair<float>> dp;
+    DiodePair<float> dp { &P1, 2.52e-9f, 0.02585f };
 };
 
 } // namespace cpp_poly_wdf

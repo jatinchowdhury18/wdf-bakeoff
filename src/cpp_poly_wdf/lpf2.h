@@ -1,12 +1,12 @@
 #pragma once
 
-#include <wdf.h>
+#include <chowdsp_wdf/chowdsp_wdf.h>
 #include <memory>
 
 namespace cpp_poly_wdf
 {
 
-using namespace chowdsp::WDF;
+using namespace chowdsp::wdf;
 
 /**
  * A simple 2nd-order RC lowpass filter
@@ -18,15 +18,8 @@ public:
 
     void reset(float sampleRate)
     {
-        c1 = std::make_unique<Capacitor<float>> (1.0e-6f, sampleRate);
-        c2 = std::make_unique<Capacitor<float>> (1.0e-6f, sampleRate);
-
-        s1 = std::make_unique<WDFSeries<float>> (c1.get(), &r1);
-        p1 = std::make_unique<WDFParallel<float>> (c2.get(), s1.get());
-        s2 = std::make_unique<WDFSeries<float>> (&r2, p1.get());
-        i1 = std::make_unique<PolarityInverter<float>> (s2.get());
-
-        vs = std::make_unique<IdealVoltageSource<float>> (i1.get());
+        c1.prepare (sampleRate);
+        c2.prepare (sampleRate);
     }
 
     void compute (int numSamples, float** input, float** output)
@@ -35,27 +28,27 @@ public:
         auto* y = output[0];
         for (int i = 0; i < numSamples; ++i)
         {
-            vs->setVoltage (x[i]);
+            vs.setVoltage (x[i]);
 
-            vs->incident (i1->reflected());
-            i1->incident (vs->reflected());
+            vs.incident (i1.reflected());
+            i1.incident (vs.reflected());
 
-            y[i] = c1->voltage();
+            y[i] = c1.voltage();
         }
     }
 
 private:
     Resistor<float> r1 { 10.0e3f };
     Resistor<float> r2 { 10.0e3f };
-    std::unique_ptr<Capacitor<float>> c1;
-    std::unique_ptr<Capacitor<float>> c2;
+    Capacitor<float> c1 { 1.0e6f};
+    Capacitor<float> c2 { 1.0e-6f };
 
-    std::unique_ptr<WDFSeries<float>> s1;
-    std::unique_ptr<WDFParallel<float>> p1;
-    std::unique_ptr<WDFSeries<float>> s2;
+    WDFSeries<float> s1 { &c1, &r1 };
+    WDFParallel<float> p1 { &c2, &s1 };
+    WDFSeries<float> s2 { &r2, &p1 };
 
-    std::unique_ptr<PolarityInverter<float>> i1;
-    std::unique_ptr<IdealVoltageSource<float>> vs;
+    PolarityInverter<float> i1 { &s2 };
+    IdealVoltageSource<float> vs { &i1 };
 };
 
 } // namespace cpp_poly_wdf

@@ -1,11 +1,11 @@
 #pragma once
 
-#include <wdf_t.h>
+#include <chowdsp_wdf/chowdsp_wdf.h>
 
 namespace cpp_wdf
 {
 
-using namespace chowdsp::WDFT;
+using namespace chowdsp::wdft;
 
 /**
  * A simple 2nd-order RC lowpass filter

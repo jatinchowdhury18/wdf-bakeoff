@@ -58,6 +58,21 @@ double testWDFCiaramella(WDFType& wdf, double timeSeconds, double sampleRate)
     return duration;
 }
 
+template<typename FaustWDFType, typename CPPWDFType>
+void compareWDFs(FaustWDFType& f_wdf, CPPWDFType& cpp_wdf, double timeSeconds, double sampleRate)
+{
+    std::cout << "Running Faust WDF..." << std::endl;
+    auto f_wdf_dur = testWDF(f_wdf, timeSeconds, sampleRate);
+
+    std::cout << "Running CPP WDF..." << std::endl;
+    auto cpp_wdf_dur = testWDF(cpp_wdf, timeSeconds, sampleRate);
+
+    if (f_wdf_dur > cpp_wdf_dur)
+        std::cout << "CPP WDF is " << f_wdf_dur / cpp_wdf_dur << "x faster than Faust!" << std::endl;
+    else
+        std::cout << "Faust WDF is " << cpp_wdf_dur / f_wdf_dur << "x faster than C++!" << std::endl;
+}
+
 template<typename FaustWDFType, typename CPPWDFType, typename CPPPOLYWDFType>
 void compareWDFs(FaustWDFType& f_wdf, CPPWDFType& cpp_wdf, CPPPOLYWDFType& cpp_poly_wdf, double timeSeconds, double sampleRate)
 {

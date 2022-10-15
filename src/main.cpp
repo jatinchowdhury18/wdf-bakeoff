@@ -1,3 +1,5 @@
+#include <xsimd/xsimd.hpp>
+
 #include "cpp_wdf/diode_clipper.h"
 #include "cpp_wdf/ff2.h"
 #include "cpp_wdf/lpf2.h"

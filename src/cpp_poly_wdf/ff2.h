@@ -1,6 +1,6 @@
 #pragma once
 
-#include <wdf.h>
+#include <chowdsp_wdf/chowdsp_wdf.h>
 #include <memory>
 
 namespace cpp_poly_wdf
@@ -12,41 +12,22 @@ namespace cpp_poly_wdf
  */ 
 class FF2
 {
-    using Capacitor = chowdsp::WDF::Capacitor<float>;
-    using Resistor = chowdsp::WDF::Resistor<float>;
-    using ResVs = chowdsp::WDF::ResistiveVoltageSource<float>;
-    using IdealVs = chowdsp::WDF::IdealVoltageSource<float>;
-    using Series = chowdsp::WDF::WDFSeries<float>;
-    using Parallel = chowdsp::WDF::WDFParallel<float>;
-    using Inverter = chowdsp::WDF::PolarityInverter<float>;
+    using Capacitor = chowdsp::wdf::Capacitor<float>;
+    using Resistor = chowdsp::wdf::Resistor<float>;
+    using ResVs = chowdsp::wdf::ResistiveVoltageSource<float>;
+    using IdealVs = chowdsp::wdf::IdealVoltageSource<float>;
+    using Series = chowdsp::wdf::WDFSeries<float>;
+    using Parallel = chowdsp::wdf::WDFParallel<float>;
+    using Inverter = chowdsp::wdf::PolarityInverter<float>;
 public:
     FF2() = default;
 
     void reset(float sampleRate)
     {
-        C4 = std::make_unique<Capacitor> (68e-9f, sampleRate);
-        C6 = std::make_unique<Capacitor> (390e-9f, sampleRate);
-        C11 = std::make_unique<Capacitor> (2.2e-9f, sampleRate);
-        C12 = std::make_unique<Capacitor> (27e-9f, sampleRate);
-
-        S1 = std::make_unique<Series> (C12.get(), &R18);
-        P1 = std::make_unique<Parallel> (S1.get(), &R17);
-        S2 = std::make_unique<Series> (C11.get(), &R15);
-        S3 = std::make_unique<Series> (S2.get(), &R16);
-
-        P2 = std::make_unique<Parallel> (S3.get(), P1.get());
-        P3 = std::make_unique<Parallel> (P2.get(), &RVBot);
-        S4 = std::make_unique<Series> (P3.get(), &RVTop);
-
-        S5 = std::make_unique<Series> (C6.get(), &R9);
-        P4 = std::make_unique<Parallel> (S4.get(), S5.get());
-        P5 = std::make_unique<Parallel> (P4.get(), &R8);
-
-        S6 = std::make_unique<Series> (P5.get(), &Vbias);
-        P6 = std::make_unique<Parallel> (&R5, C4.get());
-        S7 = std::make_unique<Series> (P6.get(), S6.get());
-        I1 = std::make_unique<Inverter> (S7.get());
-        Vin = std::make_unique<IdealVs> (I1.get());
+        C4.prepare (sampleRate);
+        C6.prepare (sampleRate);
+        C11.prepare (sampleRate);
+        C12.prepare (sampleRate);
 
         Vbias.setVoltage (4.5f);
     }
@@ -57,16 +38,15 @@ public:
         auto* y = output[0];
         for (int i = 0; i < numSamples; ++i)
         {
-            Vin->setVoltage (x[i]);
+            Vin.setVoltage (x[i]);
 
-            Vin->incident (I1->reflected());
-            I1->incident (Vin->reflected());
+            Vin.incident (I1.reflected());
+            I1.incident (Vin.reflected());
             y[i] = R16.current();
         }
     }
 
 private:
-    std::unique_ptr<IdealVs> Vin;
     ResVs Vbias;
 
     Resistor R5 { 5100.0 };
@@ -79,28 +59,30 @@ private:
     Resistor R17 { 27000.0 };
     Resistor R18 { 12000.0 };
 
-    std::unique_ptr<Capacitor> C4;
-    std::unique_ptr<Capacitor> C6;
-    std::unique_ptr<Capacitor> C11;
-    std::unique_ptr<Capacitor> C12;
+    Capacitor C4 { 68e-9f };
+    Capacitor C6 { 390e-9f };
+    Capacitor C11 { 2.2e-9f };
+    Capacitor C12 { 27e-9f };
 
-    std::unique_ptr<Series> S1;
-    std::unique_ptr<Parallel> P1;
-    std::unique_ptr<Series> S2;
-    std::unique_ptr<Series> S3;
+    Series S1 { &C12, &R18 };
+    Parallel P1 { &S1, &R17 };
+    Series S2 { &C11, &R15 };
+    Series S3 { &S2, &R16 };
 
-    std::unique_ptr<Parallel> P2;
-    std::unique_ptr<Parallel> P3;
-    std::unique_ptr<Series> S4;
+    Parallel P2 { &S3, &P1 };
+    Parallel P3 { &P2, &RVBot};
+    Series S4 { &P3, &RVTop };
 
-    std::unique_ptr<Series> S5;
-    std::unique_ptr<Parallel> P4;
-    std::unique_ptr<Parallel> P5;
+    Series S5 { &C6, &R9};
+    Parallel P4 { &S4, &S5 };
+    Parallel P5 { &P4, &R8 };
 
-    std::unique_ptr<Series> S6;
-    std::unique_ptr<Parallel> P6;
-    std::unique_ptr<Series> S7;
-    std::unique_ptr<Inverter> I1;
+    Series S6 { &P5, &Vbias };
+    Parallel P6 { &R5, &C4 };
+    Series S7 { &P6, &S6 };
+    Inverter I1 { &S7 };
+
+    IdealVs Vin { &I1 };
 };
 
 } // namespace cpp_poly_wdf
