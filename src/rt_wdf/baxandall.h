@@ -3,55 +3,6 @@
 #include <rt-wdf/rt-wdf.h>
 
 namespace rt_wdf {
-    class wdfTerminatedRtype_Baxandall : public wdfTerminatedRtype
-    {
-
-    public:
-        //----------------------------------------------------------------------
-        wdfTerminatedRtype_Baxandall ( wdfTreeNode* left,
-                                 wdfTreeNode *right ) : wdfTerminatedRtype( {left, right} ) {
-
-        }
-
-        //----------------------------------------------------------------------
-        double calculateUpRes( double T )
-        {
-            const double Rleft  = downPorts[0]->Rp;
-            const double Rright = downPorts[1]->Rp;
-            const double Rup    = Rleft + Rright;
-            return ( Rup );
-        }
-
-        //----------------------------------------------------------------------
-        void calculateScatterCoeffs( )
-        {
-            const double Ru = upPort->Rp;
-            const double Rl = downPorts[0]->Rp;
-            const double Rr = downPorts[1]->Rp;
-
-            const double yu = 1.0;
-            const double yl = 2.0 * Rl / ( Ru + Rl + Rr );
-            const double yr = 1.0 - yl;
-
-            S->at(0,0) = 1-yu;
-            S->at(0,1) =  -yu;
-            S->at(0,2) =  -yu;
-
-            S->at(1,0) =  -yl;
-            S->at(1,1) = 1-yl;
-            S->at(1,2) =  -yl;
-
-            S->at(2,0) =  -yr;
-            S->at(2,1) =  -yr;
-            S->at(2,2) = 1-yr;
-
-
-            for( wdfPort* downPort : downPorts ) {
-                downPort->connectedNode->calculateScatterCoeffs( );
-            }
-        }
-    };
-
     class Baxandall : public wdfTree
     {
     public:

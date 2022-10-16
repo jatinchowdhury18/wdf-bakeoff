@@ -5,20 +5,24 @@
 #include "cpp_wdf/lpf2.h"
 #include "cpp_wdf/pultec.h"
 #include "cpp_wdf/baxandall.h"
+#include "cpp_wdf/bassman.h"
 
 #include "cpp_poly_wdf/diode_clipper.h"
 #include "cpp_poly_wdf/ff2.h"
 #include "cpp_poly_wdf/lpf2.h"
+#include "cpp_poly_wdf/bassman.h"
 
 #include "faust_ff2.h"
 #include "faust_lpf2.h"
 #include "faust_dc.h"
 #include "faust_pultec.h"
 #include "faust_baxandall.h"
+#include "faust_bassman.h"
 
 #include "rt_wdf/lpf2.h"
 #include "rt_wdf/ff2.h"
 #include "rt_wdf/baxandall.h"
+#include "rt_wdf/bassman.h"
 
 #include "ciaramella_out/crm_lpf2.h"
 
@@ -113,9 +117,24 @@ int main(int argc, char *argv[])
         Baxandall baxandall_faust;
         baxandall_faust.init((int)sampleRate);
 
-        rt_wdf::FF2 baxandall_rtwdf {sampleRate};
+        rt_wdf::Baxandall baxandall_rtwdf {sampleRate};
 
         compareWDFs(baxandall_faust, baxandall, baxandall, baxandall_rtwdf, lengthSeconds, sampleRate);
+    }
+    else if (circuitType == "bassman")
+    {
+        cpp_wdf::BassmanTonestack<float> bassman;
+        bassman.prepare (sampleRate);
+
+        cpp_poly_wdf::BassmanTonestack<float> bassman_poly;
+        bassman_poly.prepare (sampleRate);
+
+        Bassman bassman_faust;
+        bassman_faust.init((int)sampleRate);
+
+        rt_wdf::Bassman bassman_rtwdf {sampleRate};
+
+        compareWDFs(bassman_faust, bassman, bassman_poly, bassman_rtwdf, lengthSeconds, sampleRate);
     }
     else if (circuitType == "pultec")
     {

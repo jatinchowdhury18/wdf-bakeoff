@@ -2,27 +2,6 @@ cmake_minimum_required(VERSION 3.5)
 set(CMAKE_CXX_STANDARD 17)
 project (wdf-bakeoff)
 
-# Set compiler flags for SIMD
-#include(CheckCXXCompilerFlag)
-#if(MSVC)
-#    CHECK_CXX_COMPILER_FLAG("/arch:AVX2" COMPILER_OPT_ARCH_AVX_SUPPORTED)
-#    if(COMPILER_OPT_ARCH_AVX_SUPPORTED)
-#        message(STATUS "AVX2 flags enabled for MSVC compiler!")
-#        add_compile_options(/arch:AVX2)
-#    else()
-#        message(STATUS "Unable to add AVX2 flags for MSVC compiler!")
-#    endif()
-#else()
-#    CHECK_CXX_COMPILER_FLAG("-mavx2 -mfma" COMPILER_OPT_ARCH_NATIVE_SUPPORTED)
-#    if (COMPILER_OPT_ARCH_NATIVE_SUPPORTED)
-#        message(STATUS "AVX2 flags enabled for ${CMAKE_CXX_COMPILER_ID} compiler!")
-##        add_compile_options(-mavx2 -mfma)
-#        add_compile_options(-mfma)
-#    else()
-#        message(STATUS "Unable to enable AVX2 flags for ${CMAKE_CXX_COMPILER_ID} compiler!")
-#    endif()
-#endif()
-
 add_executable(wdf-bakeoff
     src/main.cpp
 
