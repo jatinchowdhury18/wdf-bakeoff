@@ -14,9 +14,11 @@
 #include "faust_lpf2.h"
 #include "faust_dc.h"
 #include "faust_pultec.h"
+#include "faust_baxandall.h"
 
 #include "rt_wdf/lpf2.h"
 #include "rt_wdf/ff2.h"
+#include "rt_wdf/baxandall.h"
 
 #include "ciaramella_out/crm_lpf2.h"
 
@@ -108,7 +110,12 @@ int main(int argc, char *argv[])
     {
         cpp_wdf::BaxandallWDF baxandall((float) sampleRate);
 
-        compareWDFs(baxandall, baxandall, baxandall, lengthSeconds, sampleRate);
+        Baxandall baxandall_faust;
+        baxandall_faust.init((int)sampleRate);
+
+        rt_wdf::FF2 baxandall_rtwdf {sampleRate};
+
+        compareWDFs(baxandall_faust, baxandall, baxandall, baxandall_rtwdf, lengthSeconds, sampleRate);
     }
     else if (circuitType == "pultec")
     {

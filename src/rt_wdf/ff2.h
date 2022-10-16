@@ -69,7 +69,7 @@ namespace rt_wdf {
             }
         }
 
-        const char* getTreeIdentifier() override { return "lpf2"; }
+        const char* getTreeIdentifier() override { return "ff2"; }
         int setRootMatrData (matData* /*rootMats*/, double* /*Rp*/) override { return 0; }
         void setInputValue (double signalIn) override { vs->Vs = signalIn; }
         double getOutputValue() override { return R16->upPort->getPortCurrent(); }
