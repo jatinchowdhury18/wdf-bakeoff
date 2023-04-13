@@ -14,6 +14,8 @@ class FF2
 {
     using Capacitor = chowdsp::wdf::Capacitor<float>;
     using Resistor = chowdsp::wdf::Resistor<float>;
+    using RCSeries = chowdsp::wdf::ResistorCapacitorSeries<float>;
+    using RCParallel = chowdsp::wdf::ResistorCapacitorParallel<float>;
     using ResVs = chowdsp::wdf::ResistiveVoltageSource<float>;
     using IdealVs = chowdsp::wdf::IdealVoltageSource<float>;
     using Series = chowdsp::wdf::WDFSeries<float>;
@@ -24,10 +26,10 @@ public:
 
     void reset(float sampleRate)
     {
-        C4.prepare (sampleRate);
-        C6.prepare (sampleRate);
-        C11.prepare (sampleRate);
-        C12.prepare (sampleRate);
+        S1.prepare (sampleRate);
+        S2.prepare (sampleRate);
+        S5.prepare (sampleRate);
+        P6.prepare (sampleRate);
 
         Vbias.setVoltage (4.5f);
     }
@@ -49,36 +51,27 @@ public:
 private:
     ResVs Vbias;
 
-    Resistor R5 { 5100.0 };
     Resistor R8 { 1500.0 };
-    Resistor R9 { 1000.0 };
     Resistor RVTop { 50000.0 };
     Resistor RVBot { 50000.0 };
-    Resistor R15 { 22000.0 };
     Resistor R16 { 47000.0 };
     Resistor R17 { 27000.0 };
-    Resistor R18 { 12000.0 };
 
-    Capacitor C4 { 68e-9f };
-    Capacitor C6 { 390e-9f };
-    Capacitor C11 { 2.2e-9f };
-    Capacitor C12 { 27e-9f };
-
-    Series S1 { &C12, &R18 };
+    RCSeries S1 { 12000.0f, 27.0e-9f };
     Parallel P1 { &S1, &R17 };
-    Series S2 { &C11, &R15 };
+    RCSeries S2 { 22000.0f, 2.2e-9f };
     Series S3 { &S2, &R16 };
 
     Parallel P2 { &S3, &P1 };
     Parallel P3 { &P2, &RVBot};
     Series S4 { &P3, &RVTop };
 
-    Series S5 { &C6, &R9};
+    RCSeries S5 { 1000.0f, 390.0e-9f };
     Parallel P4 { &S4, &S5 };
     Parallel P5 { &P4, &R8 };
 
     Series S6 { &P5, &Vbias };
-    Parallel P6 { &R5, &C4 };
+    RCParallel P6 { 5100.0f, 68.0e-9f };
     Series S7 { &P6, &S6 };
     Inverter I1 { &S7 };
 

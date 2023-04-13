@@ -8,14 +8,15 @@ namespace cpp_wdf
 /**
  * Feed-forward network two from the Klon Centaur overdrive pedal.
  * For more information, see: https://www.electrosmash.com/klon-centaur-analysis
- */ 
+ */
 class FF2
 {
 public:
-    FF2(float sampleRate) : C4 (68e-9f, sampleRate),
-                            C6 (390e-9f, sampleRate),
-                            C11 (2.2e-9f, sampleRate),
-                            C12 (27e-9f, sampleRate)
+    FF2(float sampleRate)
+        : S1 (12000.0f, 27.0e-9f, sampleRate),
+          S2 (22000.0f, 2.2e-9f, sampleRate),
+          S5 (1000.0f, 390.0e-9f, sampleRate),
+          P6 (5100.0f, 68.0e-9f, sampleRate)
     {
         Vbias.setVoltage (4.5f);
     }
@@ -40,31 +41,20 @@ private:
     using ResVs = chowdsp::wdft::ResistiveVoltageSourceT<float>;
 
     ResVs Vbias;
-    Resistor R5 { 5100.0 };
     Resistor R8 { 1500.0 };
-    Resistor R9 { 1000.0 };
     Resistor RVTop { 50000.0 };
     Resistor RVBot { 50000.0 };
-    Resistor R15 { 22000.0 };
     Resistor R16 { 47000.0 };
     Resistor R17 { 27000.0 };
-    Resistor R18 { 12000.0 };
 
-    Capacitor C4;
-    Capacitor C6;
-    Capacitor C11;
-    Capacitor C12;
+    chowdsp::wdft::ResistorCapacitorSeriesT<float> S1;
 
-    using S1Type = chowdsp::wdft::WDFSeriesT<float, Capacitor, Resistor>;
-    S1Type S1 { C12, R18 };
-
-    using P1Type = chowdsp::wdft::WDFParallelT<float, S1Type, Resistor>;
+    using P1Type = chowdsp::wdft::WDFParallelT<float, decltype (S1), Resistor>;
     P1Type P1 { S1, R17 };
 
-    using S2Type = chowdsp::wdft::WDFSeriesT<float, Capacitor, Resistor>;
-    S2Type S2 { C11, R15 };
+    chowdsp::wdft::ResistorCapacitorSeriesT<float> S2;
 
-    using S3Type = chowdsp::wdft::WDFSeriesT<float, S2Type, Resistor>;
+    using S3Type = chowdsp::wdft::WDFSeriesT<float, decltype (S2), Resistor>;
     S3Type S3 { S2, R16 };
 
     using P2Type = chowdsp::wdft::WDFParallelT<float, S3Type, P1Type>;
@@ -76,10 +66,9 @@ private:
     using S4Type = chowdsp::wdft::WDFSeriesT<float, P3Type, Resistor>;
     S4Type S4 { P3, RVTop };
 
-    using S5Type = chowdsp::wdft::WDFSeriesT<float, Capacitor, Resistor>;
-    S5Type S5 { C6, R9 };
+    chowdsp::wdft::ResistorCapacitorSeriesT<float> S5;
 
-    using P4Type = chowdsp::wdft::WDFParallelT<float, S4Type, S5Type>;
+    using P4Type = chowdsp::wdft::WDFParallelT<float, S4Type, decltype (S5)>;
     P4Type P4 { S4, S5 };
 
     using P5Type = chowdsp::wdft::WDFParallelT<float, P4Type, Resistor>;
@@ -88,10 +77,9 @@ private:
     using S6Type = chowdsp::wdft::WDFSeriesT<float, P5Type, ResVs>;
     S6Type S6 { P5, Vbias };
 
-    using P6Type = chowdsp::wdft::WDFParallelT<float, Resistor, Capacitor>;
-    P6Type P6 { R5, C4 };
+    chowdsp::wdft::ResistorCapacitorParallelT<float> P6;
 
-    using S7Type = chowdsp::wdft::WDFSeriesT<float, P6Type, S6Type>;
+    using S7Type = chowdsp::wdft::WDFSeriesT<float, decltype (P6), S6Type>;
     S7Type S7 { P6, S6 };
 
     using I1Type = chowdsp::wdft::PolarityInverterT<float, S7Type>;
